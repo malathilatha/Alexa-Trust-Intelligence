@@ -1,0 +1,4 @@
+employee_name,ticket_id,issue,status,opened_at
+R. Al Mazrouei,TCK-4410,Password reset requested after lockout,open,2026-10-07T09:00
+S. Khan,TCK-4330,Laptop replacement,closed,2026-09-20T10:00
+D. Varghese,TCK-4388,VPN access issue,closed,2026-09-28T11:30

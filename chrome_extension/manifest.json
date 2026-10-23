@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Trust Intelligence — Gmail Check",
+  "version": "1.0",
+  "description": "Adds a 'Check with Trust Intelligence' button to open Gmail messages. Sends the sender/subject/body to the local Alexa Trust Intelligence voice_bridge and shows the real HOLD/REVIEW/PROCEED decision inline.",
+  "permissions": ["scripting"],
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "http://127.0.0.1:8010/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

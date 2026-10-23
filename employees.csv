@@ -1,0 +1,14 @@
+name,role,manager,normal_device,normal_location,normal_hours,approval_chain,avg_transaction_aed
+R. Al Mazrouei,CFO,CEO,Registered laptop,Abu Dhabi UAE,08:00-18:00,CFO -> Finance Director -> Accountant,200000
+A. Suleiman,CEO,Board,Registered laptop + registered phone,Abu Dhabi UAE,07:30-19:00,CEO -> CFO,50000
+S. Khan,HR Manager,CFO,Registered laptop,Abu Dhabi UAE,09:00-17:00,HR Manager -> Finance Director,180000
+T. Fernandes,Marketing Lead,CFO,Registered phone,Dubai UAE,09:00-18:00,Marketing Lead -> Finance Director,40000
+J. Pillai,Sales Executive,Sales Director,Registered laptop,Abu Dhabi UAE,09:00-18:00,Sales Executive -> Sales Director,700
+M. Osei,Regional Manager,CEO,Registered phone,Abu Dhabi UAE (travels regionally with approved trips),08:00-19:00,Regional Manager -> CFO,16000
+D. Varghese,Procurement,CFO,Registered laptop,Abu Dhabi UAE,09:00-17:00,Procurement -> Finance Director,30000
+P. Nazir,Finance Director,CFO,Registered laptop,Abu Dhabi UAE,08:30-18:00,Finance Director -> CFO,150000
+L. Ahmadi,Customer Success,Sales Director,Registered laptop,Abu Dhabi UAE,09:00-18:00,Customer Success -> Sales Director,3000
+IT Support,IT,CFO,N/A - internal team,Abu Dhabi UAE,09:00-17:00,No financial approval role,0
+Al Noor Supplies,Vendor,N/A,N/A,Sharjah UAE,N/A,No formal approval step on file,120000
+Bright Line Contractors,Vendor,N/A,N/A,Dubai UAE,N/A,Requires two sign-offs over 100000 AED,250000
+Global Freight Partners,Vendor,N/A,N/A,Dubai UAE,N/A,No formal approval step on file,55000
