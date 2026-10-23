@@ -198,8 +198,11 @@ cases (see the one scored-stricter case above).
 ## Running it
 
 Needs Python 3.11+ and AWS credentials with Bedrock access in `us-east-1`
-(`aws configure`). Without them the server still runs, but wording signals
-fall back to a keyword list and narration/free-text extraction are degraded.
+(`aws configure`). Without them the server still runs and the prepared scenarios
+still return correct decisions (the rules are plain Python), but wording
+signals fall back to a keyword list, explanations become generic, and
+free-text requests can't be parsed. When Bedrock can't be reached, each
+result says so in its explanation and tells you to run `aws configure`.
 
 ```
 pip install -r requirements.txt

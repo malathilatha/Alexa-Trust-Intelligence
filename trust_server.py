@@ -454,23 +454,28 @@ def explain_with_bedrock(request_text, claimed_sender, emp, fired_rules, scoring
         "risk_score": scoring["risk_score"], "risk_level": scoring["risk_level"],
         "decision": scoring["decision"],
     }
-    response = bedrock.converse(
-        modelId=BEDROCK_MODEL_ID,
-        system=[{"text": SYSTEM_PROMPT}],
-        messages=[{"role": "user", "content": [{"text": json.dumps(user_payload)}]}],
-        inferenceConfig={"maxTokens": 400, "temperature": 0.2},
-    )
-    raw = response["output"]["message"]["content"][0]["text"].strip()
-    if raw.startswith("```"):
-        raw = raw.strip("`").removeprefix("json").strip()
     try:
+        response = bedrock.converse(
+            modelId=BEDROCK_MODEL_ID,
+            system=[{"text": SYSTEM_PROMPT}],
+            messages=[{"role": "user", "content": [{"text": json.dumps(user_payload)}]}],
+            inferenceConfig={"maxTokens": 400, "temperature": 0.2},
+        )
+        raw = response["output"]["message"]["content"][0]["text"].strip()
+        if raw.startswith("```"):
+            raw = raw.strip("`").removeprefix("json").strip()
         return json.loads(raw)
-    except json.JSONDecodeError:
+    except Exception:
+        # Bedrock unreachable, no AWS credentials, or unusable reply. The decision
+        # itself is already made by the rules, so only the wording degrades.
         return {
-            "explanation": f"{scoring['decision']} ({scoring['risk_level']} risk, score {scoring['risk_score']}).",
+            "explanation": f"{scoring['decision']} ({scoring['risk_level']} risk, score {scoring['risk_score']}). NOTE: "
+                           "AWS Bedrock is unavailable (no AWS credentials or no access), so this is the built-in wording. "
+                           "Run `aws configure` with Bedrock access in us-east-1 for full explanations.",
             "spoken_summary": f"{scoring['decision']}. Risk score {scoring['risk_score']} out of 100.",
             "missing_requirements": [],
-            "safe_resolution": "Review manually — the explanation step did not return a usable response.",
+            "safe_resolution": "Review manually. Note: AWS Bedrock is unavailable, so explanations are generic.",
+            "bedrock_status": "unavailable",
         }
 
 
@@ -521,22 +526,22 @@ def start_investigation(freeform_text: str) -> dict:
     missing_evidence (with a follow-up question per gap) for what's still
     needed. Once claimed_sender, device, location, and time are all known,
     call check_trust with the full details."""
-    response = bedrock.converse(
-        modelId=BEDROCK_MODEL_ID,
-        system=[{"text": EXTRACT_PROMPT}],
-        messages=[{"role": "user", "content": [{"text": freeform_text}]}],
-        inferenceConfig={"maxTokens": 400, "temperature": 0.0},
-    )
-    raw = response["output"]["message"]["content"][0]["text"].strip()
-    if raw.startswith("```"):
-        raw = raw.strip("`").removeprefix("json").strip()
     try:
+        response = bedrock.converse(
+            modelId=BEDROCK_MODEL_ID,
+            system=[{"text": EXTRACT_PROMPT}],
+            messages=[{"role": "user", "content": [{"text": freeform_text}]}],
+            inferenceConfig={"maxTokens": 400, "temperature": 0.0},
+        )
+        raw = response["output"]["message"]["content"][0]["text"].strip()
+        if raw.startswith("```"):
+            raw = raw.strip("`").removeprefix("json").strip()
         result = json.loads(raw)
-    except json.JSONDecodeError:
+    except Exception:
         return {
             "extracted": {},
             "missing_evidence": [{"field": "all", "priority": 1,
-                                   "question": "Could you describe the request again? I couldn't process that."}],
+                                   "question": "I couldn't process that free-text request. This needs AWS Bedrock: run `aws configure` with Bedrock access in us-east-1, or use the prepared scenarios."}],
             "ready_for_check_trust": False,
         }
 
@@ -857,18 +862,18 @@ def _narrate_contradictions(reference_id, contradictions):
     if not contradictions:
         return "No contradictions found — the claims in this request match company records."
     payload = {"reference_id": reference_id, "contradictions": contradictions}
-    response = bedrock.converse(
-        modelId=BEDROCK_MODEL_ID,
-        system=[{"text": NARRATE_PROMPT}],
-        messages=[{"role": "user", "content": [{"text": json.dumps(payload)}]}],
-        inferenceConfig={"maxTokens": 250, "temperature": 0.2},
-    )
-    raw = response["output"]["message"]["content"][0]["text"].strip()
-    if raw.startswith("```"):
-        raw = raw.strip("`").removeprefix("json").strip()
     try:
+        response = bedrock.converse(
+            modelId=BEDROCK_MODEL_ID,
+            system=[{"text": NARRATE_PROMPT}],
+            messages=[{"role": "user", "content": [{"text": json.dumps(payload)}]}],
+            inferenceConfig={"maxTokens": 250, "temperature": 0.2},
+        )
+        raw = response["output"]["message"]["content"][0]["text"].strip()
+        if raw.startswith("```"):
+            raw = raw.strip("`").removeprefix("json").strip()
         return json.loads(raw).get("summary", "")
-    except json.JSONDecodeError:
+    except Exception:
         return f"{len(contradictions)} contradiction(s) found — see details below."
 
 
